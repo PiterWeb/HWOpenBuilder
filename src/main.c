@@ -12,6 +12,7 @@
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 #define NK_IMPLEMENTATION
+#define NK_ASSERT
 #include <nuklear.h>
 #define NK_SDL_RENDERER_IMPLEMENTATION
 #include <nuklear_sdl_renderer.h>
@@ -19,6 +20,7 @@
 // Project
 #include <stdio.h>
 #include "window_events.c"
+#include "node.c"
 
 int main() {
     lua_State *L = luaL_newstate(); // Create a new Lua state
@@ -63,6 +65,7 @@ int main() {
             nk_label(ctx, "Presiona F11 para pantalla completa", NK_TEXT_CENTERED);
         }
         nk_end(ctx);
+        node_editor(ctx);
 
         // Renderizar
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
