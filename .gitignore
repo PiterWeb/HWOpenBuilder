@@ -1,0 +1,5 @@
+lua-5.4.8/src/*.o
+lua-5.4.8/src/*.dll
+
+HWOpenBuilder
+HWOpenBuilder.exe
