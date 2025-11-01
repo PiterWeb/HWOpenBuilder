@@ -17,13 +17,10 @@ NUKLEAR_SRC = nuklear
 SDL2_SRC = /usr/include/SDL2
 
 APP_OBJS = src/main.o
+APP_SRC = src/headers
 TARGET = HWOpenBuilder
 
-CFLAGS = -I$(LUA_SRC) -I$(NUKLEAR_SRC) -I$(SDL2_SRC)
-
-# Compilar Lua 5.4.8
-$(LUA_SRC)/%.o: $(LUA_SRC)/%.c
-	gcc -c -O2 -Wall -Wextra -fPIC -I$(LUA_SRC) $< -o $@
+CFLAGS = -I$(LUA_SRC) -I$(NUKLEAR_SRC) -I$(SDL2_SRC) -I$(APP_SRC)
 
 # Compilar tu aplicación
 src/%.o: src/%.c
