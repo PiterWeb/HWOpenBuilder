@@ -25,7 +25,7 @@ int main() {
     luaL_openlibs(L);               // Load standard Lua libraries
 
     // Execute Lua script
-    if (luaL_dofile(L, "./scripts/script.lua")) {
+    if (luaL_dofile(L, "./nodes/main.lua")) {
         printf("Error: %s\n", lua_tostring(L, -1));
     }
 
@@ -59,7 +59,7 @@ int main() {
         // UI de ejemplo
         if (nk_begin(ctx, "Main", nk_rect(50, 50, 220, 220),
             NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE)) {
-            nk_layout_row_dynamic(ctx, 30, 1);
+            nk_layout_row_dynamic(ctx, 0, 1);
             nk_label(ctx, "Presiona F11 para pantalla completa", NK_TEXT_CENTERED);
         }
         nk_end(ctx);
