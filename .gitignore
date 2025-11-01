@@ -1,5 +1,6 @@
 lua-5.4.8/src/*.o
 lua-5.4.8/src/*.dll
+lua-5.4.8/src/*.a
 
 HWOpenBuilder
 HWOpenBuilder.exe
