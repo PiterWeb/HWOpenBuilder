@@ -1,3 +1,5 @@
 CompileFlags:
-  Compiler: gcc
-  Add: [-I/usr/include/SDL2, -Ilua-5.4.8/src, -Inuklear]
+  Add:
+    - "-I/usr/include/SDL2"
+    - "-I/home/piter/Programacion/c/HWOpenBuilder/lua-5.4.8/src"
+    - "-I/home/piter/Programacion/c/HWOpenBuilder/nuklear"
