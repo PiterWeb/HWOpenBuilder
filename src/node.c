@@ -10,11 +10,12 @@
  * In addition adding and removing nodes is quite limited at the
  * moment since it is based on a simple fixed array. If this is to be converted
  * into something more serious it is probably best to extend it.*/
- 
+
  // This file has modifications to use it on HWOpenBuilder
 
 #include "headers/node.h"
 #include <stdint.h>
+#include <stdio.h>
 
 static void
 node_editor_push(struct node_editor *editor, struct node *node)
@@ -163,8 +164,53 @@ node_editor(struct nk_context *ctx)
 
                     /* ================= NODE CONTENT =====================*/
                     nk_layout_row_dynamic(ctx, 25, 1);
-                    it->input_count = (nk_byte) nk_propertyi(ctx, "N Inputs", 1, it->input_count, UINT8_MAX, 1, 1);
-                    it->output_count = (nk_byte) nk_propertyi(ctx, "N Outputs", 1, it->output_count, UINT8_MAX, 1, 1);
+
+                    uint8_t old_input_count = it->input_count;
+                    uint8_t old_output_count = it->output_count;
+                    it->input_count = (uint8_t) nk_propertyi(ctx, "N Inputs", 0, it->input_count, UINT8_MAX, 1, 1);
+                    it->output_count = (uint8_t) nk_propertyi(ctx, "N Outputs", 0, it->output_count, UINT8_MAX, 1, 1);
+
+                    /* ================= Handle link on input/output number update (it may have to be removed if input/output no longer exists) ================= */
+
+                    if (old_input_count > it->input_count) {
+                        struct node *no = it;
+                        // Invert for loop to get the last link of the node
+                        for (n = nodedit->link_count - 1; n >= 0; --n) {
+                            struct node_link *link = &nodedit->links[n];
+                            if (link->output_id != no->ID) continue;
+
+                            printf("link_output_slot %d - input_count %d\n", link->output_slot, no->input_count);
+
+                            if (link->output_slot != (no->input_count)) continue;
+
+                            // Move array positions to delete current link
+                            for (int n2 = n; n2 < nodedit->link_count - 1; ++n2) {
+                                nodedit->links[n2] = nodedit->links[n2+1];
+                            }
+                            nodedit->link_count = (nodedit->link_count) - 1;
+
+                        }
+                    }
+
+                    if (old_output_count > it->output_count) {
+                        struct node *ni = it;
+                        // Invert for loop to get the last link of the node
+                        for (n = nodedit->link_count - 1; n >= 0; --n) {
+                            struct node_link *link = &nodedit->links[n];
+                            if (link->input_id != ni->ID) continue;
+
+                            printf("link_input_slot %d - output_count %d\n", link->input_slot, ni->output_count);
+
+                            if (link->input_slot != (ni->output_count)) continue;
+
+                            // Move array positions to delete current link
+                            for (int n2 = n; n2 < nodedit->link_count - 1; ++n2) {
+                                nodedit->links[n2] = nodedit->links[n2+1];
+                            }
+                            nodedit->link_count = (nodedit->link_count) - 1;
+
+                        }
+                    }
                     /* ====================================================*/
                     nk_group_end(ctx);
                 }
