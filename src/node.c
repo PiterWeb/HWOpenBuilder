@@ -14,50 +14,7 @@
  // This file has modifications to use it on HWOpenBuilder
 
 #include "headers/node.h"
- 
- struct node {
-    int ID;
-    char name[32];
-    struct nk_rect bounds;
-    float value;
-    struct nk_color color;
-    int input_count;
-    int output_count;
-    struct node *next;
-    struct node *prev;
-};
-
-struct node_link {
-    int input_id;
-    int input_slot;
-    int output_id;
-    int output_slot;
-    struct nk_vec2 in;
-    struct nk_vec2 out;
-};
-
-struct node_linking {
-    int active;
-    struct node *node;
-    int input_id;
-    int input_slot;
-};
-
-struct node_editor {
-    int initialized;
-    struct node node_buf[32];
-    struct node_link links[64];
-    struct node *begin;
-    struct node *end;
-    int node_count;
-    int link_count;
-    struct nk_rect bounds;
-    struct node *selected;
-    int show_grid;
-    struct nk_vec2 scrolling;
-    struct node_linking linking;
-};
-static struct node_editor nodeEditor;
+#include <stdint.h>
 
 static void
 node_editor_push(struct node_editor *editor, struct node *node)
@@ -104,8 +61,7 @@ node_editor_find(struct node_editor *editor, int ID)
 }
 
 static void
-node_editor_add(struct node_editor *editor, const char *name, struct nk_rect bounds,
-    struct nk_color col, int in_count, int out_count)
+node_editor_add(struct node_editor *editor, const char *name, struct nk_rect bounds, int in_count, int out_count)
 {
     static int IDs = 0;
     struct node *node;
@@ -113,11 +69,8 @@ node_editor_add(struct node_editor *editor, const char *name, struct nk_rect bou
     NK_ASSERT((nk_size)editor->node_count < NK_LEN(editor->node_buf));
     node = &editor->node_buf[editor->node_count++];
     node->ID = IDs++;
-    node->value = 0;
-    node->color = nk_rgb(255, 0, 0);
     node->input_count = in_count;
     node->output_count = out_count;
-    node->color = col;
     node->bounds = bounds;
     strcpy(node->name, name);
     node_editor_push(editor, node);
@@ -142,9 +95,9 @@ node_editor_init(struct node_editor *editor)
     memset(editor, 0, sizeof(*editor));
     editor->begin = NULL;
     editor->end = NULL;
-    node_editor_add(editor, "Source", nk_rect(40, 10, 180, 220), nk_rgb(255, 0, 0), 0, 1);
-    node_editor_add(editor, "Source", nk_rect(40, 260, 180, 220), nk_rgb(0, 255, 0), 0, 1);
-    node_editor_add(editor, "Combine", nk_rect(400, 100, 180, 220), nk_rgb(0,0,255), 2, 2);
+    node_editor_add(editor, "Source", nk_rect(40, 10, 180, 220), 0, 1);
+    node_editor_add(editor, "Source", nk_rect(40, 260, 180, 220), 0, 1);
+    node_editor_add(editor, "Combine", nk_rect(400, 100, 180, 220), 2, 2);
     node_editor_link(editor, 0, 0, 2, 0);
     node_editor_link(editor, 1, 0, 2, 1);
     editor->show_grid = nk_true;
@@ -195,7 +148,7 @@ node_editor(struct nk_context *ctx)
                     it->bounds.y - nodedit->scrolling.y, it->bounds.w, it->bounds.h));
 
                 /* execute node window */
-                if (nk_group_begin(ctx, it->name, NK_WINDOW_MOVABLE|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER|NK_WINDOW_TITLE))
+                if (nk_group_begin(ctx, it->name, NK_WINDOW_MOVABLE|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER|NK_WINDOW_TITLE|NK_WINDOW_CLOSABLE))
                 {
                     /* always have last selected node on top */
 
@@ -210,11 +163,8 @@ node_editor(struct nk_context *ctx)
 
                     /* ================= NODE CONTENT =====================*/
                     nk_layout_row_dynamic(ctx, 25, 1);
-                    nk_button_color(ctx, it->color);
-                    it->color.r = (nk_byte)nk_propertyi(ctx, "#R:", 0, it->color.r, 255, 1,1);
-                    it->color.g = (nk_byte)nk_propertyi(ctx, "#G:", 0, it->color.g, 255, 1,1);
-                    it->color.b = (nk_byte)nk_propertyi(ctx, "#B:", 0, it->color.b, 255, 1,1);
-                    it->color.a = (nk_byte)nk_propertyi(ctx, "#A:", 0, it->color.a, 255, 1,1);
+                    it->input_count = (nk_byte) nk_propertyi(ctx, "N Inputs", 1, it->input_count, UINT8_MAX, 1, 1);
+                    it->output_count = (nk_byte) nk_propertyi(ctx, "N Outputs", 1, it->output_count, UINT8_MAX, 1, 1);
                     /* ====================================================*/
                     nk_group_end(ctx);
                 }
@@ -327,8 +277,7 @@ node_editor(struct nk_context *ctx)
                 const char *grid_option[] = {"Show Grid", "Hide Grid"};
                 nk_layout_row_dynamic(ctx, 25, 1);
                 if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED))
-                    node_editor_add(nodedit, "New", nk_rect(400, 260, 180, 220),
-                            nk_rgb(255, 255, 255), 1, 2);
+                    node_editor_add(nodedit, "New", nk_rect(400, 260, 180, 220), 1, 2);
                 if (nk_contextual_item_label(ctx, grid_option[nodedit->show_grid],NK_TEXT_CENTERED))
                     nodedit->show_grid = !nodedit->show_grid;
                 nk_contextual_end(ctx);
