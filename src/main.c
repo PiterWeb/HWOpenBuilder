@@ -60,22 +60,21 @@ int main() {
         nk_input_end(ctx);
 
         node_editor(ctx);
-        
-        // UI de ejemplo
-        if (nk_begin(ctx, "Main", nk_rect(50, 50, 220, 220),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE)) {
-            nk_layout_row_dynamic(ctx, 0, 1);
-            nk_label(ctx, "Presiona F11 para pantalla completa", NK_TEXT_CENTERED);
-        }
-        nk_end(ctx);
 
+        // UI de ejemplo
+        // if (nk_begin(ctx, "Main", nk_rect(50, 50, 220, 220),
+        //     NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE)) {
+        //     nk_layout_row_dynamic(ctx, 0, 1);
+        //     nk_label(ctx, "Presiona F11 para pantalla completa", NK_TEXT_CENTERED);
+        // }
+        // nk_end(ctx);
         // Renderizar
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
         SDL_RenderClear(renderer);
         nk_sdl_render(NK_ANTI_ALIASING_ON);
         SDL_RenderPresent(renderer);
     }
-    
+
     nk_sdl_shutdown();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(win);
