@@ -29,7 +29,7 @@ int main() {
     luaL_openlibs(L);               // Load standard Lua libraries
 
     // Execute Lua script
-    if (luaL_dofile(L, "./nodes/main.lua")) {
+    if (luaL_dofile(L, "./components/main.lua")) {
         printf("Error: %s\n", lua_tostring(L, -1));
     }
 
