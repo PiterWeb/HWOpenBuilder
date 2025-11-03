@@ -16,13 +16,17 @@ NUKLEAR_SRC = nuklear
 
 SDL2_SRC = /usr/include/SDL2
 
-WINDOWS_DIRENT_SRC = windows_dirent
 
 APP_OBJS = src/main.o
 APP_SRC = src/headers
 TARGET = HWOpenBuilder
 
-CFLAGS = -I$(LUA_SRC) -I$(NUKLEAR_SRC) -I$(SDL2_SRC) -I$(APP_SRC) -I$(WINDOWS_DIRENT_SRC)
+CFLAGS = -I$(LUA_SRC) -I$(NUKLEAR_SRC) -I$(SDL2_SRC) -I$(APP_SRC)
+
+ifeq ($(OS),Windows_NT)
+	WINDOWS_DIRENT_SRC = windows_dirent
+	CFLAGS += -I$(WINDOWS_DIRENT_SRC)
+endif
 
 # Compilar tu aplicación
 src/%.o: src/%.c
