@@ -63,7 +63,7 @@ node_editor_find(struct node_editor *editor, int ID)
 }
 
 static void
-node_editor_add(struct node_editor *editor, struct components *components, const uint32_t component_ID,struct nk_rect bounds, int in_count, int out_count)
+node_editor_add(struct node_editor *editor, const struct components *components, const uint32_t component_ID,struct nk_rect bounds, int in_count, int out_count)
 {
     static int IDs = 0;
     struct node *node;
@@ -94,7 +94,7 @@ node_editor_link(struct node_editor *editor, int in_id, int in_slot,
 }
 
 static void
-node_editor_init(struct node_editor *editor, struct components *components)
+node_editor_init(struct node_editor *editor, const struct components *components)
 {
     memset(editor, 0, sizeof(*editor));
     editor->begin = NULL;
@@ -108,7 +108,7 @@ node_editor_init(struct node_editor *editor, struct components *components)
 }
 
 static int
-node_editor(struct nk_context *ctx, struct components *components)
+node_editor(struct nk_context *ctx, const struct components *components)
 {
     int n = 0;
     struct nk_rect total_space;
