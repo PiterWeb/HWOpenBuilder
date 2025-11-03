@@ -1,5 +1,4 @@
 // Lua
-#include "SDL_video.h"
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -17,11 +16,13 @@
 #include <nuklear.h>
 #define NK_SDL_RENDERER_IMPLEMENTATION
 #include <nuklear_sdl_renderer.h>
+#include "SDL_video.h"
 
 // Project
 #include <stdio.h>
 #include "window_events.c"
 #include "node.c"
+#include "component.c"
 
 int main() {
     lua_State *L = luaL_newstate(); // Create a new Lua state
@@ -50,6 +51,8 @@ int main() {
     nk_sdl_font_stash_end();
     nk_style_set_font(ctx, &font->handle);
 
+    struct components* components = get_components();
+
     int running = 1;
     while (running) {
         SDL_Event evt;
@@ -59,7 +62,7 @@ int main() {
         }
         nk_input_end(ctx);
 
-        node_editor(ctx);
+        node_editor(ctx, components);
 
         // UI de ejemplo
         // if (nk_begin(ctx, "Main", nk_rect(50, 50, 220, 220),

@@ -12,7 +12,7 @@
     
     struct node {
        int ID;
-       char name[32];
+       uint32_t  component_ID;
        struct nk_rect bounds;
        uint8_t input_count;
        uint8_t output_count;

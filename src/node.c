@@ -14,6 +14,7 @@
  // This file has modifications to use it on HWOpenBuilder
 
 #include "headers/node.h"
+#include "headers/component.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -62,7 +63,7 @@ node_editor_find(struct node_editor *editor, int ID)
 }
 
 static void
-node_editor_add(struct node_editor *editor, const char *name, struct nk_rect bounds, int in_count, int out_count)
+node_editor_add(struct node_editor *editor, struct components *components, const uint32_t component_ID,struct nk_rect bounds, int in_count, int out_count)
 {
     static int IDs = 0;
     struct node *node;
@@ -73,8 +74,10 @@ node_editor_add(struct node_editor *editor, const char *name, struct nk_rect bou
     node->input_count = in_count;
     node->output_count = out_count;
     node->bounds = bounds;
-    strcpy(node->name, name);
-    node_editor_push(editor, node);
+
+    if (component_ID < components->n) {
+        node_editor_push(editor, node);
+    }
 }
 
 static void
@@ -91,21 +94,21 @@ node_editor_link(struct node_editor *editor, int in_id, int in_slot,
 }
 
 static void
-node_editor_init(struct node_editor *editor)
+node_editor_init(struct node_editor *editor, struct components *components)
 {
     memset(editor, 0, sizeof(*editor));
     editor->begin = NULL;
     editor->end = NULL;
-    node_editor_add(editor, "Source", nk_rect(40, 10, 180, 220), 0, 1);
-    node_editor_add(editor, "Source", nk_rect(40, 260, 180, 220), 0, 1);
-    node_editor_add(editor, "Combine", nk_rect(400, 100, 180, 220), 2, 2);
+    node_editor_add(editor, components, 0 ,nk_rect(40, 10, 180, 220), 0, 1);
+    node_editor_add(editor, components, 0, nk_rect(40, 260, 180, 220), 0, 1);
+    node_editor_add(editor, components, 0, nk_rect(400, 100, 180, 220), 2, 2);
     node_editor_link(editor, 0, 0, 2, 0);
     node_editor_link(editor, 1, 0, 2, 1);
     editor->show_grid = nk_true;
 }
 
 static int
-node_editor(struct nk_context *ctx)
+node_editor(struct nk_context *ctx, struct components *components)
 {
     int n = 0;
     struct nk_rect total_space;
@@ -115,7 +118,7 @@ node_editor(struct nk_context *ctx)
     struct node_editor *nodedit = &nodeEditor;
 
     if (!nodeEditor.initialized) {
-        node_editor_init(&nodeEditor);
+        node_editor_init(&nodeEditor, components);
         nodeEditor.initialized = 1;
     }
 
@@ -148,8 +151,14 @@ node_editor(struct nk_context *ctx)
                 nk_layout_space_push(ctx, nk_rect(it->bounds.x - nodedit->scrolling.x,
                     it->bounds.y - nodedit->scrolling.y, it->bounds.w, it->bounds.h));
 
+                char *node_name = NULL;
+                
+                if (components->arr_component != NULL) {
+                    node_name = components->arr_component[it->component_ID].name;
+                }
+                
                 /* execute node window */
-                if (nk_group_begin(ctx, it->name, NK_WINDOW_MOVABLE|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER|NK_WINDOW_TITLE|NK_WINDOW_CLOSABLE))
+                if (nk_group_begin(ctx, node_name, NK_WINDOW_MOVABLE|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER|NK_WINDOW_TITLE|NK_WINDOW_CLOSABLE))
                 {
                     /* always have last selected node on top */
 
@@ -179,8 +188,6 @@ node_editor(struct nk_context *ctx)
                             struct node_link *link = &nodedit->links[n];
                             if (link->output_id != no->ID) continue;
 
-                            printf("link_output_slot %d - input_count %d\n", link->output_slot, no->input_count);
-
                             if (link->output_slot != (no->input_count)) continue;
 
                             // Move array positions to delete current link
@@ -198,8 +205,6 @@ node_editor(struct nk_context *ctx)
                         for (n = nodedit->link_count - 1; n >= 0; --n) {
                             struct node_link *link = &nodedit->links[n];
                             if (link->input_id != ni->ID) continue;
-
-                            printf("link_input_slot %d - output_count %d\n", link->input_slot, ni->output_count);
 
                             if (link->input_slot != (ni->output_count)) continue;
 
@@ -323,7 +328,7 @@ node_editor(struct nk_context *ctx)
                 const char *grid_option[] = {"Show Grid", "Hide Grid"};
                 nk_layout_row_dynamic(ctx, 25, 1);
                 if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED))
-                    node_editor_add(nodedit, "New", nk_rect(400, 260, 180, 220), 1, 2);
+                    node_editor_add(nodedit, components, 0, nk_rect(400, 260, 180, 220), 1, 2);
                 if (nk_contextual_item_label(ctx, grid_option[nodedit->show_grid],NK_TEXT_CENTERED))
                     nodedit->show_grid = !nodedit->show_grid;
                 nk_contextual_end(ctx);
