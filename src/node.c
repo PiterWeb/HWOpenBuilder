@@ -209,7 +209,7 @@ node_editor(struct nk_context *ctx, const struct components *components)
                             if (link->input_slot != (ni->output_count)) continue;
 
                             // Move array positions to delete current link
-                            for (int n2 = n; n2 < nodedit->link_count - 1; ++n2) {
+                            for (int n2 = n; n2 < nodedit->link_count; ++n2) {
                                 nodedit->links[n2] = nodedit->links[n2+1];
                             }
                             nodedit->link_count = (nodedit->link_count) - 1;
