@@ -1,6 +1,7 @@
 # HWOpenBuilder
 
-A project that is trying to make a framework for working on the developing of digital hardware simulation.
+A project that is trying to make a framework for working on the developing of digital hardware simulation/emulation.
+Imagine a toolkit to develop your own NES/GameBoy/... emulator
 
 ### Problem explanation
 
