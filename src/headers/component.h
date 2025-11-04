@@ -12,5 +12,7 @@
     };
     
    struct components *get_components();
+   
+   void free_components(struct components * components);
     
  #endif
