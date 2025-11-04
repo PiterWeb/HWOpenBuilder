@@ -10,3 +10,9 @@ There are good solutions to this problem like using Verilator, by coding in veri
 What if you could use a fast and friendly scripting language like Lua to create the hardware you want and connect it with an intuitive UI. This is what HWOpenBuilder is trying to achieve. 
 
 ![ui example with nodes and connections](./assets/ui.png)
+
+## Dependencies
+
+- [Lua](https://www.lua.org)
+- [Nuklear](https://github.com/Immediate-Mode-UI/Nuklear)
+- [Dirent](https://github.com/tronkko/dirent)
