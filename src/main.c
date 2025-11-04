@@ -1,4 +1,5 @@
 // Lua
+#include "headers/component.h"
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -82,6 +83,9 @@ int main() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(win);
     SDL_Quit();
+
+    free_components(components);
+
     return 0;
 
 }
