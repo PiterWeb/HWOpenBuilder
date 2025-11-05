@@ -1,9 +1,3 @@
-// Lua
-#include "headers/component.h"
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-
 // Nuklear
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -20,23 +14,13 @@
 #include "SDL_video.h"
 
 // Project
-#include <stdio.h>
+#include "headers/component.h"
 #include "window_events.c"
 #include "node.c"
 #include "component.c"
 #include "run_lua.c"
 
 int main() {
-    lua_State *L = luaL_newstate(); // Create a new Lua state
-    luaL_openlibs(L);               // Load standard Lua libraries
-
-    // Execute Lua main script
-    if (luaL_dofile(L, "./components/main.lua")) {
-        printf("Error: %s\n", lua_tostring(L, -1));
-    }
-
-    lua_close(L); // Close the Lua state
-
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window *win = SDL_CreateWindow("HWOpenBuilder",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
