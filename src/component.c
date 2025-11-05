@@ -15,7 +15,7 @@ int count_components_in_folder() {
     if ((dir = opendir("./components")) != NULL) {
       /* print all the files and directories within directory */
       while ((ent = readdir(dir)) != NULL) {
-        if (!str_ends_with(ent->d_name, ".lua")) {
+        if (!str_ends_with(ent->d_name, ".component.lua")) {
             continue;
         }
         n_components += 1;  
@@ -40,21 +40,21 @@ struct components *get_components() {
     // Allocate components
     components->arr_component = malloc(sizeof(struct component) * n_components_in_folder);
     
-    const int dot_lua_len = strlen(".lua");
+    const int dot_component_dot_lua_len = strlen(".component.lua");
     
     DIR *dir;
     struct dirent *ent;
     if ((dir = opendir("./components")) != NULL) {
       /* print all the .lua files within directory */
       while ((ent = readdir(dir)) != NULL) {
-        if (!str_ends_with(ent->d_name, ".lua")) {
+        if (!str_ends_with(ent->d_name, ".component.lua")) {
             continue;
         }
         
         const int d_name_len = strlen(ent->d_name);
         
-        char *base_name = malloc(sizeof(ent->d_name) - sizeof(".lua"));
-        strncpy(base_name, ent->d_name, (d_name_len - dot_lua_len));
+        char *base_name = malloc(sizeof(ent->d_name) - sizeof(".component.lua"));
+        strncpy(base_name, ent->d_name, (d_name_len - dot_component_dot_lua_len));
         
         components->arr_component[components->n].name = base_name;
         

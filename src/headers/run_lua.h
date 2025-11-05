@@ -1,0 +1,1 @@
+int run_lua_components(struct components *components);

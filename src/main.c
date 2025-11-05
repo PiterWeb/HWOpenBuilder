@@ -24,12 +24,13 @@
 #include "window_events.c"
 #include "node.c"
 #include "component.c"
+#include "run_lua.c"
 
 int main() {
     lua_State *L = luaL_newstate(); // Create a new Lua state
     luaL_openlibs(L);               // Load standard Lua libraries
 
-    // Execute Lua script
+    // Execute Lua main script
     if (luaL_dofile(L, "./components/main.lua")) {
         printf("Error: %s\n", lua_tostring(L, -1));
     }
@@ -63,7 +64,6 @@ int main() {
         }
         nk_input_end(ctx);
 
-        node_editor(ctx, components);
 
         // UI de ejemplo
         // if (nk_begin(ctx, "Main", nk_rect(50, 50, 220, 220),
@@ -73,6 +73,19 @@ int main() {
         // }
         // nk_end(ctx);
         // Renderizar
+
+        if (nk_begin(ctx, "Main", nk_rect(50, 50, 220, 220),
+            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE)) {
+            nk_layout_row_dynamic(ctx, 0, 1);
+            if (nk_button_label(ctx, "Run code")) {
+                // event handling
+                run_lua_components(components);
+            }
+        }
+        nk_end(ctx);
+
+        node_editor(ctx, components);
+
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
         SDL_RenderClear(renderer);
         nk_sdl_render(NK_ANTI_ALIASING_ON);
