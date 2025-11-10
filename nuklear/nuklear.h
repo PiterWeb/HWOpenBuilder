@@ -217,6 +217,9 @@ nk_end(&ctx);
 ## API
 
 */
+
+#pragma GCC diagnostic ignored "-Wunused-value"
+
 #ifndef NK_SINGLE_FILE
   #define NK_SINGLE_FILE
 #endif
