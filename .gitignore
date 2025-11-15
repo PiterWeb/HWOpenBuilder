@@ -4,7 +4,7 @@ lua-5.4.8/src/*.dll
 lua-5.4.8/src/*.a
 
 # Project
-src/main.o
+src/*.o
 
 HWOpenBuilder
 HWOpenBuilder.exe
