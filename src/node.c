@@ -73,7 +73,6 @@ node_editor_add(struct node_editor *editor, const struct components *components,
 {
     static int IDs = 0;
     struct node *node;
-    #pragma GCC diagnostic ignored "-Wimplicit-function-declaration"
     assert((nk_size)editor->node_count < NK_LEN(editor->node_buf));
     node = &editor->node_buf[editor->node_count++];
     node->ID = IDs++;
