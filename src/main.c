@@ -7,7 +7,6 @@
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 #define NK_IMPLEMENTATION
-#define NK_ASSERT
 #include <nuklear.h>
 #define NK_SDL_RENDERER_IMPLEMENTATION
 #include <nuklear_sdl_renderer.h>
@@ -15,10 +14,9 @@
 
 // Project
 #include "headers/component.h"
-#include "window_events.c"
-#include "node.c"
-#include "component.c"
-#include "run_lua.c"
+#include "headers/node.h"
+#include "headers/window_events.h"
+#include "headers/run_lua.h"
 
 int main() {
     SDL_Init(SDL_INIT_VIDEO);

@@ -1,15 +1,13 @@
 #ifndef PROJECT_NODE
     #define PROJECT_NODE
+    
+    #include "component.h"
     #include <stdint.h>
-    #include <math.h>
-    #include <stdio.h>
-    #include <string.h>
     
     #ifndef NK_IMPLEMENTATION
         #include <nuklear.h>
     #endif
 
-    
     struct node {
        int ID;
        uint32_t  component_ID;
@@ -51,6 +49,6 @@
         struct node_linking linking;
     };
     
-    static struct node_editor nodeEditor;
+    int node_editor(struct nk_context *ctx, const struct components *components);
     
 #endif

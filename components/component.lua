@@ -11,7 +11,9 @@ function Component:new(o, inputs, outputs, behavior)
 end
 
 function Component:update()
+---@diagnostic disable-next-line: redundant-parameter
     local outputs = self.behavior(table.unpack(self.inputs))
+---@diagnostic disable-next-line: param-type-mismatch
     for i, output in ipairs(outputs) do
         self.outputs[i] = output
     end

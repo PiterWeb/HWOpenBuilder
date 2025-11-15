@@ -1,9 +1,9 @@
-#include "headers/component.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <string.h>
+#include "headers/component.h"
 #include "headers/util.h"
 
 int count_components_in_folder() {
@@ -84,4 +84,9 @@ void free_components(struct components *components) {
     printf("Free components struct\n");
     free(components);
     
+}
+
+void refresh_components(struct components **components) {
+    free_components(*components);
+    *components = get_components();
 }

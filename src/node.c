@@ -13,10 +13,16 @@
 
  // This file has modifications to use it on HWOpenBuilder
 
-#include "headers/node.h"
-#include "headers/component.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <assert.h>
+
+#include "headers/node.h"
+#include "headers/component.h"
+
+static struct node_editor nodeEditor;
 
 static void
 node_editor_push(struct node_editor *editor, struct node *node)
@@ -68,7 +74,7 @@ node_editor_add(struct node_editor *editor, const struct components *components,
     static int IDs = 0;
     struct node *node;
     #pragma GCC diagnostic ignored "-Wimplicit-function-declaration"
-    NK_ASSERT((nk_size)editor->node_count < NK_LEN(editor->node_buf));
+    assert((nk_size)editor->node_count < NK_LEN(editor->node_buf));
     node = &editor->node_buf[editor->node_count++];
     node->ID = IDs++;
     node->input_count = in_count;
@@ -85,7 +91,7 @@ node_editor_link(struct node_editor *editor, int in_id, int in_slot,
     int out_id, int out_slot)
 {
     struct node_link *link;
-    NK_ASSERT((nk_size)editor->link_count < NK_LEN(editor->links));
+    assert((nk_size)editor->link_count < NK_LEN(editor->links));
     link = &editor->links[editor->link_count++];
     link->input_id = in_id;
     link->input_slot = in_slot;
@@ -107,8 +113,7 @@ node_editor_init(struct node_editor *editor, const struct components *components
     editor->show_grid = nk_true;
 }
 
-static int
-node_editor(struct nk_context *ctx, const struct components *components)
+int node_editor(struct nk_context *ctx, const struct components *components)
 {
     int n = 0;
     struct nk_rect total_space;
@@ -152,11 +157,11 @@ node_editor(struct nk_context *ctx, const struct components *components)
                     it->bounds.y - nodedit->scrolling.y, it->bounds.w, it->bounds.h));
 
                 char *node_name = NULL;
-                
+
                 if (components->arr_component != NULL) {
                     node_name = components->arr_component[it->component_ID].name;
                 }
-                
+
                 /* execute node window */
                 if (nk_group_begin(ctx, node_name, NK_WINDOW_MOVABLE|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER|NK_WINDOW_TITLE|NK_WINDOW_CLOSABLE))
                 {

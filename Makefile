@@ -17,7 +17,7 @@ NUKLEAR_SRC = nuklear
 SDL2_SRC = /usr/include/SDL2
 
 
-APP_OBJS = src/main.o
+APP_OBJS = src/main.o src/node.o src/run_lua.o src/window_events.o src/component.o
 APP_SRC = src/headers
 TARGET = HWOpenBuilder
 
