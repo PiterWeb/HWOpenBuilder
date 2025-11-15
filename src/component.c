@@ -6,7 +6,7 @@
 #include "headers/component.h"
 #include "headers/util.h"
 
-int count_components_in_folder() {
+static int count_components_in_folder() {
         
     int n_components = 0;
     
