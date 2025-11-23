@@ -15,6 +15,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <assert.h>
@@ -57,7 +58,7 @@ node_editor_pop(struct node_editor *editor, struct node *node)
 }
 
 static struct node*
-node_editor_find(struct node_editor *editor, int ID)
+node_editor_find(struct node_editor *editor, unsigned int ID)
 {
     struct node *iter = editor->begin;
     while (iter) {
@@ -106,9 +107,17 @@ node_editor_init(struct node_editor *editor, const struct components *components
     editor->begin = NULL;
     editor->end = NULL;
 
-    node_editor_add(editor, components, 0, "1", nk_rect(40, 10, 180, 220), 0, 1);
-    node_editor_add(editor, components, 0, "2", nk_rect(40, 260, 180, 220), 0, 1);
-    node_editor_add(editor, components, 0, "3", nk_rect(400, 100, 180, 220), 2, 2);
+    char *name1 = malloc(sizeof(char) * 64);
+    char *name2 = malloc(sizeof(char) * 64);
+    char *name3 = malloc(sizeof(char) * 64);
+
+    strcpy(name1, "1");
+    strcpy(name2, "2");
+    strcpy(name3, "3");
+
+    node_editor_add(editor, components, 0, name1, nk_rect(40, 10, 180, 220), 0, 1);
+    node_editor_add(editor, components, 0, name2, nk_rect(40, 260, 180, 220), 0, 1);
+    node_editor_add(editor, components, 0, name3, nk_rect(400, 100, 180, 220), 2, 2);
     node_editor_link(editor, 0, 0, 2, 0);
     node_editor_link(editor, 1, 0, 2, 1);
     editor->show_grid = nk_true;
@@ -181,16 +190,12 @@ int node_editor(struct nk_context *ctx, const struct components *components)
                     nk_layout_row_dynamic(ctx, 25, 1);
 
                     // Label component string creation
-                    char label_component[strlen(component_node_name) + strlen("Component: ")];
+                    char label_component[strlen(component_node_name) + strlen("Component: ") + 1];
                     strcpy(label_component, "Component: ");
                     strcat(label_component, component_node_name);
-
                     nk_label(ctx, label_component, NK_TEXT_LEFT);
-                    nk_label(ctx, "Name: ", NK_TEXT_LEFT);
-                    // nk_edit_string_zero_terminated(ctx, NK_EDIT_SIMPLE, it->name, strlen(it->name) + 1, nk_filter_ascii);
-
-                    int name_len = strlen(it->name);
-                    nk_edit_string(ctx, NK_EDIT_FIELD, it->name, &name_len, strlen(it->name) + 1, nk_filter_default);
+                    
+                    nk_edit_string_zero_terminated(ctx, NK_EDIT_FIELD, it->name, 64, nk_filter_ascii);
 
                     uint8_t old_input_count = it->input_count;
                     uint8_t old_output_count = it->output_count;
@@ -345,10 +350,14 @@ int node_editor(struct nk_context *ctx, const struct components *components)
             if (nk_contextual_begin(ctx, 0, nk_vec2(100, 220), nk_window_get_bounds(ctx))) {
                 const char *grid_option[] = {"Show Grid", "Hide Grid"};
                 nk_layout_row_dynamic(ctx, 25, 1);
-                if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED))
-                    node_editor_add(nodedit, components, 0, "New node",nk_rect(400, 260, 180, 220), 1, 2);
-                if (nk_contextual_item_label(ctx, grid_option[nodedit->show_grid],NK_TEXT_CENTERED))
+                if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED)) {
+                    char *name = malloc(sizeof(char) * 64);
+                    strcpy(name, "New node");
+                    node_editor_add(nodedit, components, 0, name, nk_rect(400, 260, 180, 220), 1, 2);
+                }
+                if (nk_contextual_item_label(ctx, grid_option[nodedit->show_grid],NK_TEXT_CENTERED)){
                     nodedit->show_grid = !nodedit->show_grid;
+                }
                 nk_contextual_end(ctx);
             }
         }

@@ -9,9 +9,9 @@
     #endif
 
     struct node {
-       int ID;
-       char *name;
+       unsigned int ID;
        uint32_t  component_ID;
+       char *name;
        struct nk_rect bounds;
        uint8_t input_count;
        uint8_t output_count;
@@ -20,9 +20,9 @@
     };
    
     struct node_link {
-        int input_id;
+        unsigned int input_id;
         int input_slot;
-        int output_id;
+        unsigned int output_id;
         int output_slot;
         struct nk_vec2 in;
         struct nk_vec2 out;
