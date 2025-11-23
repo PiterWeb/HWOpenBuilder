@@ -10,6 +10,7 @@
 
     struct node {
        int ID;
+       char *name;
        uint32_t  component_ID;
        struct nk_rect bounds;
        uint8_t input_count;

@@ -69,7 +69,7 @@ node_editor_find(struct node_editor *editor, int ID)
 }
 
 static void
-node_editor_add(struct node_editor *editor, const struct components *components, const uint32_t component_ID,struct nk_rect bounds, int in_count, int out_count)
+node_editor_add(struct node_editor *editor, const struct components *components, const uint32_t component_ID, char *name, struct nk_rect bounds, int in_count, int out_count)
 {
     static int IDs = 0;
     struct node *node;
@@ -79,6 +79,7 @@ node_editor_add(struct node_editor *editor, const struct components *components,
     node->input_count = in_count;
     node->output_count = out_count;
     node->bounds = bounds;
+    node->name = name;
 
     if (component_ID < components->n) {
         node_editor_push(editor, node);
@@ -104,9 +105,10 @@ node_editor_init(struct node_editor *editor, const struct components *components
     memset(editor, 0, sizeof(*editor));
     editor->begin = NULL;
     editor->end = NULL;
-    node_editor_add(editor, components, 0 ,nk_rect(40, 10, 180, 220), 0, 1);
-    node_editor_add(editor, components, 0, nk_rect(40, 260, 180, 220), 0, 1);
-    node_editor_add(editor, components, 0, nk_rect(400, 100, 180, 220), 2, 2);
+
+    node_editor_add(editor, components, 0, "1", nk_rect(40, 10, 180, 220), 0, 1);
+    node_editor_add(editor, components, 0, "2", nk_rect(40, 260, 180, 220), 0, 1);
+    node_editor_add(editor, components, 0, "3", nk_rect(400, 100, 180, 220), 2, 2);
     node_editor_link(editor, 0, 0, 2, 0);
     node_editor_link(editor, 1, 0, 2, 1);
     editor->show_grid = nk_true;
@@ -155,14 +157,14 @@ int node_editor(struct nk_context *ctx, const struct components *components)
                 nk_layout_space_push(ctx, nk_rect(it->bounds.x - nodedit->scrolling.x,
                     it->bounds.y - nodedit->scrolling.y, it->bounds.w, it->bounds.h));
 
-                char *node_name = NULL;
+                char *component_node_name = NULL;
 
                 if (components->arr_component != NULL) {
-                    node_name = components->arr_component[it->component_ID].name;
+                    component_node_name = components->arr_component[it->component_ID].name;
                 }
 
                 /* execute node window */
-                if (nk_group_begin(ctx, node_name, NK_WINDOW_MOVABLE|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER|NK_WINDOW_TITLE|NK_WINDOW_CLOSABLE))
+                if (nk_group_begin(ctx, it->name, NK_WINDOW_MOVABLE|NK_WINDOW_NO_SCROLLBAR|NK_WINDOW_BORDER|NK_WINDOW_TITLE|NK_WINDOW_CLOSABLE))
                 {
                     /* always have last selected node on top */
 
@@ -177,6 +179,18 @@ int node_editor(struct nk_context *ctx, const struct components *components)
 
                     /* ================= NODE CONTENT =====================*/
                     nk_layout_row_dynamic(ctx, 25, 1);
+
+                    // Label component string creation
+                    char label_component[strlen(component_node_name) + strlen("Component: ")];
+                    strcpy(label_component, "Component: ");
+                    strcat(label_component, component_node_name);
+
+                    nk_label(ctx, label_component, NK_TEXT_LEFT);
+                    nk_label(ctx, "Name: ", NK_TEXT_LEFT);
+                    // nk_edit_string_zero_terminated(ctx, NK_EDIT_SIMPLE, it->name, strlen(it->name) + 1, nk_filter_ascii);
+
+                    int name_len = strlen(it->name);
+                    nk_edit_string(ctx, NK_EDIT_FIELD, it->name, &name_len, strlen(it->name) + 1, nk_filter_default);
 
                     uint8_t old_input_count = it->input_count;
                     uint8_t old_output_count = it->output_count;
@@ -332,7 +346,7 @@ int node_editor(struct nk_context *ctx, const struct components *components)
                 const char *grid_option[] = {"Show Grid", "Hide Grid"};
                 nk_layout_row_dynamic(ctx, 25, 1);
                 if (nk_contextual_item_label(ctx, "New", NK_TEXT_CENTERED))
-                    node_editor_add(nodedit, components, 0, nk_rect(400, 260, 180, 220), 1, 2);
+                    node_editor_add(nodedit, components, 0, "New node",nk_rect(400, 260, 180, 220), 1, 2);
                 if (nk_contextual_item_label(ctx, grid_option[nodedit->show_grid],NK_TEXT_CENTERED))
                     nodedit->show_grid = !nodedit->show_grid;
                 nk_contextual_end(ctx);

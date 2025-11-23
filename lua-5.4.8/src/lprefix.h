@@ -7,7 +7,7 @@
 #ifndef lprefix_h
 #define lprefix_h
 
-
+#define LUA_USE_POSIX
 /*
 ** Allows POSIX/XSI stuff
 */
